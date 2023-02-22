@@ -19,7 +19,7 @@ class CertainProductView(View):
     #certain product
     def get(self, request, pk):
         product = Products.objects.get(id = pk)
-        ssize = Shoe_size._meta.get_fields(include_parents= False)
-        return render(request, 'productPage.html',{'product':product, 'ssizes':ssize})
+        ssize = Shoe_size.objects.all()
+        return render(request, 'productPage.html',{'product':product, 'ssize':ssize})
     
     
