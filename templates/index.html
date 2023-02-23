@@ -30,13 +30,14 @@
     <a href="#" class="w3-bar-item w3-button">Shirts</a>
     <a href="#" class="w3-bar-item w3-button">Dresses</a>
     <a onclick="myAccFunc()" href="javascript:void(0)" class="w3-button w3-block w3-white w3-left-align" id="myBtn">
-      Jeans <i class="fa fa-caret-down"></i>
+      Brands <i class="fa fa-caret-down"></i>
     </a>
     <div id="demoAcc" class="w3-bar-block w3-hide w3-padding-large w3-medium">
-      <a href="#" class="w3-bar-item w3-button w3-light-grey"><i class="fa fa-caret-right w3-margin-right"></i>Skinny</a>
-      <a href="#" class="w3-bar-item w3-button">Relaxed</a>
-      <a href="#" class="w3-bar-item w3-button">Bootcut</a>
-      <a href="#" class="w3-bar-item w3-button">Straight</a>
+      {% for brand in brands%}
+      
+      <a href="{% url 'myapp1:index'%}?brand={{brand.id}}" class="w3-bar-item w3-button">{{brand.name}}</a>
+      {% endfor %}
+      <a href="{% url 'myapp1:index'%}" class="w3-bar-item w3-button">All brands</a>
     </div>
     <a href="#" class="w3-bar-item w3-button">Jackets</a>
     <a href="#" class="w3-bar-item w3-button">Gymwear</a>
@@ -63,44 +64,7 @@
   <!-- Push down content on small screens -->
   <div class="w3-hide-large" style="margin-top:83px"></div>
   
-  <!-- Top header -->
-  <header class="w3-container w3-xlarge">
-    <p class="w3-left">Jeans</p>
-    <p class="w3-right">
-      <i class="fa fa-shopping-cart w3-margin-right"></i>
-      <i class="fa fa-search"></i>
-    </p>
-  </header>
 
-  <!-- Image header --
-  <div class="w3-display-container w3-container">
-    {% for post in product_list %}
-
-      <h1 class="w3-jumbo w3-hide-small"> {{post.model_name}} </h1>
-      <p> {{post.price}}</p>
-    
-    {% endfor %}
-
-  </div>-->
-  
-    <!--<div id="content" class="left">
-        
-        <div class="projects">
-            <h3>Записи</h3>
-            {% for post in product_list %}
-            <div class="item">
-                <div class="image left">
-                    <a href="#"><img src="{{post.img.url}}" width="200px" class="rounded-t-xl" /></a>
-                </div>
-                <div class="text left">
-                    <h4><a href = {{post.id}}>{{post.brand}} {{post.model_name}} </a></h4>
-                    <p>{{post.price}}</p>
-                </div>
-                <div class="cl">&nbsp;</div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>-->
     
   <div class="mt-6 px-6 py-12">
     <div class  = "grid grid-cols-3 gap-4">  
