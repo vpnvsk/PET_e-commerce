@@ -26,13 +26,22 @@ class ProductView(View):
             'brand_id':int(brand_id)
             })
     
+    
 
 
 class CertainProductView(View):
     #certain product
     def get(self, request, pk):
         product = Products.objects.get(id = pk)
-        ssize = Shoe_size.objects.all()
-        return render(request, 'productPage.html',{'product':product, 'ssize':ssize})
+        brands = Brand.objects.all()
+        brand_id = request.GET.get('brand', 0)
+
+        if brand_id:
+            product_view = product_view.filter(brand=brand_id)
+        return render(request, 'productPage.html',{
+            'product':product,            
+            'brands': brands,
+            'brand_id':int(brand_id)
+            })
     
     
