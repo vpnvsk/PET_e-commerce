@@ -70,6 +70,15 @@
     <p class="w3-right">
       <i class="fa fa-shopping-cart w3-margin-right"></i>
       <i class="fa fa-search"></i>
+      {%if request.user.is_authenticated %}
+      {% else %}
+          <a href="{% url 'myapp1:signup' %}"><button class="py-4 px-8 text-lg bx-teal-500 hover:bg-teal-700 rounded-xl text-white">
+            Sign up
+          </button></a>
+          <a href="{% url 'myapp1:login' %}"><button class="py-4 px-8 text-lg bx-teal-500 hover:bg-teal-700 rounded-xl text-white">
+            Log in
+          </button></a>
+      {%endif%}
     </p>
   </header>
 

@@ -1,7 +1,7 @@
 {% load static %}
 <html>
 <head>
-<title>W3.CSS Template</title>
+<title>PET</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -62,6 +62,22 @@
 
   <!-- Push down content on small screens -->
   <div class="w3-hide-large" style="margin-top:83px"></div>
+  <!-- Top header -->
+  <header class="w3-container w3-xlarge">
+  
+    <p class="w3-right">
+      <a href="{% url 'myapp1:signup' %}"><i class="fa fa-shopping-cart w3-margin-right"></i></a>
+      <i class="fa fa-search"></i>
+     
+          <a href="{% url 'myapp1:signup' %}"><button class="py-4 px-8 text-lg bx-teal-500 hover:bg-teal-700 rounded-xl text-white">
+            Sign up
+          </button></a>
+          <a href="{% url 'myapp1:login' %}"><button class="py-4 px-8 text-lg bx-teal-500 hover:bg-teal-700 rounded-xl text-white">
+            Log in
+          </button></a>
+     
+    </p>
+  </header>
   
 
     
