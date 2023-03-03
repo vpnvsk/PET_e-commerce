@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 import os
 
 
@@ -49,6 +50,12 @@ class Products(models.Model):
 
     def __str__(self):
         return f'{self.brand} {self.model_name}'
+    
+
+class Cart(models.Model):
+
+    customer_id = models.ForeignKey(User, related_name='customer_id',on_delete=models.CASCADE)
+
     
     
 

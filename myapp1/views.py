@@ -2,6 +2,9 @@ from django.shortcuts import redirect, render
 from django.views.generic.base import View
 from .models import Products, Shoe_size, Brand
 from .forms import SignupForm 
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 def indexPage(request):
@@ -67,3 +70,8 @@ def sigup( request):
         'form': form
     })
 
+def log_out(request):
+    logout(request)
+    messages.info(request,'Logged out successfully!')
+    return redirect('.')
+    
