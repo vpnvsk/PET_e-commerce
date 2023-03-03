@@ -52,11 +52,4 @@ class Products(models.Model):
         return f'{self.brand} {self.model_name}'
     
 
-class Cart(models.Model):
-
-    customer_id = models.ForeignKey(User, related_name='customer_id',on_delete=models.CASCADE)
-
-    
-    
-
 

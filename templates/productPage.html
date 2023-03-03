@@ -35,9 +35,9 @@
     <div id="demoAcc" class="w3-bar-block w3-hide w3-padding-large w3-medium">
 
       {% for brand in brands%}
-      <a href="{% url 'myapp1:index'%}?brand={{brand.id}}" class="w3-bar-item w3-button">{{brand.name}}</a>
+      <a href="{% url 'productsContent:index'%}?brand={{brand.id}}" class="w3-bar-item w3-button">{{brand.name}}</a>
       {% endfor %}
-      <a href="{% url 'myapp1:index'%}" class="w3-bar-item w3-button">All brands</a>
+      <a href="{% url 'productsContent:index'%}" class="w3-bar-item w3-button">All brands</a>
     </div>
     <a href="#" class="w3-bar-item w3-button">Jackets</a>
     <a href="#" class="w3-bar-item w3-button">Gymwear</a>
@@ -72,10 +72,10 @@
       <i class="fa fa-search"></i>
       {%if request.user.is_authenticated %}
       {% else %}
-          <a href="{% url 'myapp1:signup' %}"><button class="py-4 px-8 text-lg bx-teal-500 hover:bg-teal-700 rounded-xl text-white">
+          <a href="{% url 'userAuthentication:signup' %}"><button class="py-4 px-8 text-lg bx-teal-500 hover:bg-teal-700 rounded-xl text-white">
             Sign up
           </button></a>
-          <a href="{% url 'myapp1:login' %}"><button class="py-4 px-8 text-lg bx-teal-500 hover:bg-teal-700 rounded-xl text-white">
+          <a href="{% url 'userAuthentication:login' %}"><button class="py-4 px-8 text-lg bx-teal-500 hover:bg-teal-700 rounded-xl text-white">
             Log in
           </button></a>
       {%endif%}

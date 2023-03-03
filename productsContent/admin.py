@@ -17,4 +17,3 @@ class ImageAdmin(admin.ModelAdmin):
 @admin.register(Shoe_size)
 class SizeAdmin(admin.ModelAdmin):
     list_display = ('name', 'id')
-
