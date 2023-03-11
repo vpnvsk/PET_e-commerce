@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import Order, OrderItem
 
-# Register your models here.
+@admin.register(Order)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('owner','ref_code')
+
+@admin.register(OrderItem)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('id','product')
