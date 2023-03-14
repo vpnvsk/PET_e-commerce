@@ -12,8 +12,14 @@ class OrderItem(models.Model):
     is_ordered = models.BooleanField(default=False)
     quantity = models.IntegerField(default=1)
     size = models.ForeignKey(Size ,on_delete=models.CASCADE, related_name='sssize', default = None)
+
     def __str__(self) -> str:
         return self.product.model_name
+    
+    def get_orderItem_price(self) -> int:
+        price = self.product.price * self.quantity
+        return price
+
     
 
     
