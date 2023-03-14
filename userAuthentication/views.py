@@ -7,7 +7,7 @@ from .models import Profile
 from cart.models import Order
 
 
-def sigup( request):
+def sigup(request):
 
     if request.method == 'POST':
         form = SignupForm(request.POST)

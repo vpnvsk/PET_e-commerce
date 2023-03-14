@@ -1,6 +1,6 @@
 from django.shortcuts import  render
 from django.views.generic.base import View
-from .models import Products, Brand
+from .models import Products, Brand, ProductSize
 from django.views.generic import View
 
 
@@ -32,9 +32,12 @@ class CertainProductView(View):
     def get(self, request, pk):
             
         product_qs = Products.objects.filter(id = pk)
+
         if product_qs.exists():
 
             product = product_qs[0]
+
+            product_size_qs = ProductSize.objects.filter(product = product)
                             
             brands = Brand.objects.all()
             brand_id = request.GET.get('brand', 0)
@@ -44,7 +47,8 @@ class CertainProductView(View):
             return render(request, 'productPage.html',{
                 'product':product,            
                 'brands': brands,
-                'brand_id':int(brand_id)
+                'brand_id':int(brand_id),
+                'product_size': product_size_qs
                 })
         
     

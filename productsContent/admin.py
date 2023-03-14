@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Products, Brand, Image, Shoe_size
+from .models import Products, Brand, Image, ProductSize, Size
 
 
 @admin.register(Products)
@@ -14,6 +14,15 @@ class BrandAdmin(admin.ModelAdmin):
 class ImageAdmin(admin.ModelAdmin):
     list_display = ('name', 'id')
 
-@admin.register(Shoe_size)
+ 
+@admin.register(ProductSize)
+class ProductSizeInline(admin.ModelAdmin):
+    list_display = ('size', 'product')
+
+@admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id')
+    list_display = ('size', 'id')
+
+
+
+

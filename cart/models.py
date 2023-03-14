@@ -1,6 +1,6 @@
 from django.db import models
 from userAuthentication.models import Profile
-from productsContent.models import Products
+from productsContent.models import Products, ProductSize,Size
 
 
 from django.conf import settings
@@ -11,7 +11,7 @@ class OrderItem(models.Model):
     product = models.OneToOneField(Products, on_delete=models.SET_NULL, null=True)
     is_ordered = models.BooleanField(default=False)
     quantity = models.IntegerField(default=1)
-
+    size = models.ForeignKey(Size ,on_delete=models.CASCADE, related_name='sssize', default = None)
     def __str__(self) -> str:
         return self.product.model_name
     

@@ -48,58 +48,16 @@
                 </div>
                 <div class="cl">&nbsp;</div>
                 <div class  = "grid grid-cols-5 gap-0">  
-              
-                  {%if product.size.f40 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">40</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>40</button>
-                  {%endif%}
-                  {%if product.size.f40d5 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">40,5</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>40,5</button>
-                  {%endif%}
-                  {%if product.size.f41 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">41</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>41</button>
-                  {%endif%}
-                  {%if product.size.f41d5 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">41,5</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>41,5</button>
-                  {%endif%}
-                  {%if product.size.f42 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">42</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>42</button>
-                  {%endif%}
-                  {%if product.size.f42d5 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">42,5</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>42,5</button>
-                  {%endif%}
-                  {%if product.size.f43 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">43</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>43</button>
+                  {% for size in product_size %}
+                    {% if size.get_count > 0 %}
+                      <button class="bg-white text-black border border-black rounded-full py-2 px-4">{{ size.size }}</button>
+                    {%else%}
+                      <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled> {{ size.size }} </button>
+                    {%endif%}
 
-                  {%endif%}
-                  {%if product.size.f44 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">44</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>44</button>
-                  {%endif%}
-                  {%if product.size.f44d5 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">44,5</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>44,5</button>
-                  {%endif%}
-                  {%if product.size.f45 > 0 %}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4">45</button>
-                  {%else%}
-                  <button class="bg-white text-black border border-black rounded-full py-2 px-4 opacity-50 cursor-not-allowed" disabled>45</button>
-                  {%endif%}
+                  {% endfor %}
+              
+                  
                 </div>
             </div>
             <a href="{{product.get_add_to_cart_url}}"><button>Add to cart</button></a>

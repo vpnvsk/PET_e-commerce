@@ -21,6 +21,13 @@ class Image(models.Model):
     def __str__(self):
         return f'{self.name}'
     
+
+class Size(models.Model):
+    size = models.CharField(max_length=5)
+
+    def __str__(self):
+        return f'{self.size}'
+    
     
 class Products(models.Model):
 
@@ -29,6 +36,7 @@ class Products(models.Model):
     price =  models.DecimalField(max_digits = 6, decimal_places = 2)
     images = models.ForeignKey(Image, on_delete=models.CASCADE)
     slug = models.SlugField()
+    sizes = models.ManyToManyField(Size, through='ProductSize')
     
 
     def __str__(self):
@@ -45,21 +53,11 @@ class Products(models.Model):
             'pk': self.id
             })
 
+class ProductSize(models.Model):
+    size = models.ForeignKey(Size, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    count = models.IntegerField(default=1)
 
-class Shoe_size(models.Model):
+    def get_count(self) -> int:
+        return self.count
 
-    name = models.CharField(max_length=10)
-    model = models.ForeignKey(Products)
-    f40 = models.IntegerField()
-    f40d5 = models.IntegerField()
-    f41 = models.IntegerField()
-    f41d5 = models.IntegerField()
-    f42 = models.IntegerField()
-    f42d5 = models.IntegerField()
-    f43 = models.IntegerField()
-    f44 = models.IntegerField()
-    f44d5 = models.IntegerField()
-    f45 = models.IntegerField()
-
-    def __str__(self):
-        return f'{self.name}'

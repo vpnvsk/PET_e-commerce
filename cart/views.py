@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from userAuthentication.models import Profile
 from .models import Order,OrderItem
-from productsContent.models import Products, Brand
+from productsContent.models import Products, Brand,ProductSize,Size
 from django.contrib import messages
 from .extra import generate_ref_code
 from django.urls import reverse
 from django.utils import timezone
+from django.db.models import F
 
 import datetime
 
@@ -23,54 +24,62 @@ def get_user_pending_order(request):
     return 0 
 
 def get_checkout(request):
+    try:
+        orders = Order.objects.filter(owner=request.user, is_ordered=False)
 
-    orders = Order.objects.filter(owner=request.user, is_ordered=False)
+        brands = Brand.objects.all()
+        brand_id = request.GET.get('brand', 0)
 
-    brands = Brand.objects.all()
-    brand_id = request.GET.get('brand', 0)
-
-    if brand_id:
-        product_view = product_view.filter(brand=brand_id)
-                        
-    return render(request, 'checkout.html', {
-        'orders':orders,
-        'brands': brands,
-        'brand_id':int(brand_id)
-        })
+        if brand_id:
+            product_view = product_view.filter(brand=brand_id)
+                            
+        return render(request, 'checkout.html', {
+            'orders':orders,
+            #'products':lst,
+            'brands': brands,
+            'brand_id':int(brand_id)
+            })
+    except:
+        messages.info(request, "You need to be loged in")
+        return redirect("productsContent:index")
 
 @login_required
 def add_to_cart(request, pk):
-    try:
-        item = get_object_or_404(Products, id=pk)
-        order_item, created = OrderItem.objects.get_or_create(
-            product=item,
-            
-            is_ordered=False
+    
+    item = get_object_or_404(Products, id=pk)
+    size_ = Size.objects.filter(size = '42').first()
+    i = ProductSize.objects.filter(size=size_, product = item ).update(count=F('count')-1)
+    
+    
+    order_item, created = OrderItem.objects.get_or_create(
+        product=item,
+        size = size_,
+        is_ordered=False
         )
-        order_qs = Order.objects.filter(owner=request.user, is_ordered=False)
-        if order_qs.exists():
+    
+    order_qs = Order.objects.filter(owner=request.user, is_ordered=False)
+    if order_qs.exists():
             
-            order = order_qs[0]
+        order = order_qs[0]
             # check if the order item is in the order
-            if order.items.filter(product__id=item.id).exists():
-                order_item.quantity = order_item.quantity + 1
-                order_item.save()
-                messages.info(request, "This item quantity was updated.")
-                return redirect("productsContent:certain_product",pk=item.id)
-            else:
-                order.items.add(order_item)
-                messages.info(request, "This item was added to your cart.")
-                return redirect("productsContent:certain_product",pk=item.id)
+        if order.items.filter(product__id=item.id).exists():
+            order_item.quantity = order_item.quantity + 1
+            order_item.save()
+            messages.info(request, "This item quantity was updated.")
+            return redirect("productsContent:certain_product",pk=item.id)
         else:
-            ordered_date = timezone.now()
-            order = Order.objects.create(
-                owner=request.user, date_ordered=ordered_date)
             order.items.add(order_item)
             messages.info(request, "This item was added to your cart.")
             return redirect("productsContent:certain_product",pk=item.id)
-    except:
-        messages.warning(request, 'You need to sign up to add to cart')
-        return redirect('productsContent:certain_product',pk=item.id)
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            owner=request.user, date_ordered=ordered_date)
+        order.items.add(order_item)
+        messages.info(request, "This item was added to your cart.")
+        return redirect("productsContent:certain_product",pk=item.id)
+        
+    
         
 
 '''@login_required
