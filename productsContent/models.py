@@ -52,6 +52,10 @@ class Products(models.Model):
         return reverse("cart:add-to-cart",kwargs={
             'pk': self.id
             })
+    def get_delete_from_cart_url(self):
+        return reverse("cart:remove-from-cart",kwargs={
+            'pk': self.id
+            })
 
 class ProductSize(models.Model):
     size = models.ForeignKey(Size, on_delete=models.CASCADE)

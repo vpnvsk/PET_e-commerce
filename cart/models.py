@@ -36,10 +36,14 @@ class Order(models.Model):
         return self.items.all()
     
     def get_cart_total(self):
-        return sum( [item.product.price for item in self.items.all()] )
+        
+        return sum( [item.product.price * item.quantity for item in self.items.all()] )
     
     def __str__(self) -> str:
         return f'{self.owner}, {self.ref_code}'
+    
+    
+
     
 
 

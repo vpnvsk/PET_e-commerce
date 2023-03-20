@@ -24,7 +24,7 @@ def get_user_pending_order(request):
     return 0 
 
 def get_checkout(request):
-    try:
+    #try:
         orders = Order.objects.filter(owner=request.user, is_ordered=False)
 
         brands = Brand.objects.all()
@@ -39,9 +39,9 @@ def get_checkout(request):
             'brands': brands,
             'brand_id':int(brand_id)
             })
-    except:
-        messages.info(request, "You need to be loged in")
-        return redirect("productsContent:index")
+    #except:
+     #   messages.info(request, "You need to be loged in")
+      #  return redirect("productsContent:index")
 
 @login_required
 def add_to_cart(request, pk):
@@ -82,16 +82,7 @@ def add_to_cart(request, pk):
     
         
 
-'''@login_required
-def delete_from_cart(request, item_id):
 
-    item_to_delete = Order.objects.filter(pk=item_id)
-
-    if item_to_delete.exists():
-        item_to_delete[0].delete()
-        messages.info(request, 'Item has been deleted')
-
-    return redirect('.')'''
 
 
 @login_required
@@ -136,4 +127,28 @@ def updete_transaction_records(request,order_id):
 
 
 
-
+@login_required
+def remove_from_cart(request, pk):
+    item = get_object_or_404(Products, id=pk)
+    order_qs = Order.objects.filter(
+        owner=request.user,
+        is_ordered=False
+    )
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(product__id=item.id).exists():
+            order_item = OrderItem.objects.filter(
+                product=item,
+                is_ordered=False
+            )[0]
+            order.items.remove(order_item)
+            order_item.delete()
+            messages.info(request, "This item was removed from your cart.")
+            return redirect("cart:checkout")
+        else:
+            messages.info(request, "This item was not in your cart")
+            return redirect("cart:checkout")
+    else:
+        messages.info(request, "You do not have an active order")
+        return redirect("cart:checkout")
