@@ -56,12 +56,46 @@
                     {%endif%}
 
                   {% endfor %}
+                  <form name = "form"  
+                   id="register">
+                    {% csrf_token %}
+                    {{form}}
+                    <input type="submit" value="add to cart" id="submitButton" />
+                </form>
               
                   
                 </div>
             </div>
-            <a href="{{product.get_add_to_cart_url}}"><button>Add to cart</button></a>
+           <!-- <a href="{{product.get_add_to_cart_url}}" ><button>Add to cart</button></a>-->
         </div>
     </div>
+   <script src="https://code.jquery.com/jquery-3.5.1.js" 
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" 
+      crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+  
+ 
+$('#submitButton').click(function(event){
+         event.preventDefault(); //so that we stop normal form submit.
+         var a = $("#id_size_field").val();
     
+    $.ajax({
+                    type:'POST',
+                     url:'{% url "cart:add-to-cart" product.id %}',
+                     data:
+                     {
+                        
+                         "size":JSON.stringify(a),
+                         csrfmiddlewaretoken:'{{csrf_token}}'
+                     },
+                     success:function(){
+             alert('Item has been adde to your cart');
+             }
+       
+                       })
+    });
+    
+
+</script>
 {%endblock%}

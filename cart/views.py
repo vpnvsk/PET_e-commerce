@@ -9,6 +9,11 @@ from .extra import generate_ref_code
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import F
+from productsContent.forms import SizeForm
+from django.http import JsonResponse
+from productsContent.views import CertainProductView
+from django.views.generic import View
+
 
 import datetime
 
@@ -43,41 +48,100 @@ def get_checkout(request):
      #   messages.info(request, "You need to be loged in")
       #  return redirect("productsContent:index")
 
-@login_required
-def add_to_cart(request, pk):
-    
-    item = get_object_or_404(Products, id=pk)
-    size_ = Size.objects.filter(size = '42').first()
-    i = ProductSize.objects.filter(size=size_, product = item ).update(count=F('count')-1)
-    
-    
-    order_item, created = OrderItem.objects.get_or_create(
-        product=item,
-        size = size_,
-        is_ordered=False
-        )
-    
-    order_qs = Order.objects.filter(owner=request.user, is_ordered=False)
-    if order_qs.exists():
+class AddToCartView(View):
+
+
+    def post(self, request, pk):
+        if request.method == 'POST':
             
-        order = order_qs[0]
-            # check if the order item is in the order
-        if order.items.filter(product__id=item.id).exists():
-            order_item.quantity = order_item.quantity + 1
-            order_item.save()
-            messages.info(request, "This item quantity was updated.")
-            return redirect("productsContent:certain_product",pk=item.id)
-        else:
-            order.items.add(order_item)
-            messages.info(request, "This item was added to your cart.")
-            return redirect("productsContent:certain_product",pk=item.id)
-    else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            owner=request.user, date_ordered=ordered_date)
-        order.items.add(order_item)
-        messages.info(request, "This item was added to your cart.")
-        return redirect("productsContent:certain_product",pk=item.id)
+            request_getdata = request.POST.get('size', None)
+            
+            item = get_object_or_404(Products, id=pk)
+            for i in request_getdata:
+                try:
+                    size_id = int(i)
+                except:
+                    pass
+            size = Size.objects.filter(id=size_id).first()
+            print("took size")
+            i = ProductSize.objects.filter( product = item ).update(count=F('count')-1)
+
+            order_item, created = OrderItem.objects.get_or_create(
+                product = item,
+                size = size,
+                is_ordered = False,
+            )
+
+            order_qs = Order.objects.filter(owner = request.user, is_ordered = False)
+            if order_qs.exists():
+                print('in first if')
+                order = order_qs[0]
+                    # check if the order item is in the order
+                if order.items.filter(product__id=item.id).exists():
+                    print('order exist')
+                    order_item.quantity = order_item.quantity + 1
+                    order_item.save()
+                    print('order saved')
+                    messages.info(request, "This item quantity was updated.")
+                    print('message send')
+                    return redirect("cart:checkout")
+                else:
+                    print('order doest exist')
+                    order.items.add(order_item)
+                    messages.info(request, "This item was added to your cart.")
+                    print('message send')
+                    return redirect("cart:checkout")
+            else:
+                print('creating order')
+                ordered_date = timezone.now()
+                order = Order.objects.create(
+                    owner=request.user, date_ordered=ordered_date)
+                order.items.add(order_item)
+                print('before message')
+                messages.info(request, "This item was added to your cart.")
+                print('message send')
+                return redirect("productsContent:certain_product",pk=item.id)
+
+            
+    
+
+
+    # @login_required
+    # def add_to_cart(self, request, pk):
+        
+    #     ii = post(self, request, pk)
+    #     item = get_object_or_404(Products, id=pk)
+    #     size_ = Size.objects.filter(id = ii).first()
+    #     i = ProductSize.objects.filter( product = item ).update(count=F('count')-1)
+        
+        
+    #     order_item, created = OrderItem.objects.get_or_create(
+    #         product=item,
+    #         size = size_,
+    #         is_ordered=False
+    #         )
+        
+    #     order_qs = Order.objects.filter(owner=request.user, is_ordered=False)
+    #     if order_qs.exists():
+                
+    #         order = order_qs[0]
+    #             # check if the order item is in the order
+    #         if order.items.filter(product__id=item.id).exists():
+    #             order_item.quantity = order_item.quantity + 1
+    #             order_item.save()
+    #             messages.info(request, "This item quantity was updated.")
+    #             return redirect("productsContent:certain_product",pk=item.id)
+    #         else:
+    #             order.items.add(order_item)
+    #             messages.info(request, "This item was added to your cart.")
+    #             return redirect("productsContent:certain_product",pk=item.id)
+    #     else:
+    #         ordered_date = timezone.now()
+    #         order = Order.objects.create(
+    #             owner=request.user, date_ordered=ordered_date)
+    #         order.items.add(order_item)
+    #         messages.info(request, "This item was added to your cart.")
+    #         return redirect("productsContent:certain_product",pk=item.id)
         
     
         
@@ -93,13 +157,7 @@ def order_details(request, **kwargs):
     return render(request, 'cart.html',{'existing_order':existing_order})
 
 
-@login_required
-def checkout(request):
 
-    existing_order = get_user_pending_order(request)
-    
-
-    return render(request, 'checkout.html',{'existing_order':existing_order})
 
 
 @login_required
