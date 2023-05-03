@@ -11,7 +11,6 @@ class SizeForm(forms.Form):
 #     fields = ('sssize')
     
 
-    
 
     size_field = forms.ModelChoiceField(
                 queryset=Size.objects.all(),

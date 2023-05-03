@@ -8,7 +8,7 @@ from django.db.models.signals import post_save
 
 class OrderItem(models.Model):
 
-    product = models.OneToOneField(Products, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Products, on_delete=models.SET_NULL, null=True)
     is_ordered = models.BooleanField(default=False)
     quantity = models.IntegerField(default=1)
     size = models.ForeignKey(Size ,on_delete=models.CASCADE, related_name='sssize', default = None)

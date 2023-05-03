@@ -64,7 +64,6 @@ class AddToCartView(View):
                     pass
             size = Size.objects.filter(id=size_id).first()
             print("took size")
-            i = ProductSize.objects.filter( product = item ).update(count=F('count')-1)
 
             order_item, created = OrderItem.objects.get_or_create(
                 product = item,
@@ -77,19 +76,23 @@ class AddToCartView(View):
                 print('in first if')
                 order = order_qs[0]
                     # check if the order item is in the order
-                if order.items.filter(product__id=item.id).exists():
+                if order.items.filter(product=item, size = size).exists():
                     print('order exist')
                     order_item.quantity = order_item.quantity + 1
                     order_item.save()
                     print('order saved')
                     messages.info(request, "This item quantity was updated.")
                     print('message send')
+                    ProductSize.objects.filter( product = item ).update(count=F('count')-1)
+
                     return redirect("cart:checkout")
                 else:
                     print('order doest exist')
                     order.items.add(order_item)
                     messages.info(request, "This item was added to your cart.")
                     print('message send')
+                    ProductSize.objects.filter( product = item ).update(count=F('count')-1)
+
                     return redirect("cart:checkout")
             else:
                 print('creating order')
@@ -100,6 +103,8 @@ class AddToCartView(View):
                 print('before message')
                 messages.info(request, "This item was added to your cart.")
                 print('message send')
+                ProductSize.objects.filter( product = item ).update(count=F('count')-1)
+
                 return redirect("productsContent:certain_product",pk=item.id)
 
             
