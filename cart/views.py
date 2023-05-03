@@ -13,23 +13,13 @@ from productsContent.forms import SizeForm
 from django.http import JsonResponse
 from productsContent.views import CertainProductView
 from django.views.generic import View
+from .cartLogic import add_to_cart, remove_item
 
 
 import datetime
 
 
-def get_user_pending_order(request):
-
-    user_profile = get_object_or_404(Profile, user = request.user)
-    order =  Order.objects.filter(owner = user_profile, is_ordered = False)
-
-    if order.exists():
-        return order[0]
-    
-    return 0 
-
 def get_checkout(request):
-    #try:
         orders = Order.objects.filter(owner=request.user, is_ordered=False)
 
         brands = Brand.objects.all()
@@ -40,131 +30,30 @@ def get_checkout(request):
                             
         return render(request, 'checkout.html', {
             'orders':orders,
-            #'products':lst,
             'brands': brands,
             'brand_id':int(brand_id)
             })
-    #except:
-     #   messages.info(request, "You need to be loged in")
-      #  return redirect("productsContent:index")
+
 
 class AddToCartView(View):
 
 
     def post(self, request, pk):
         if request.method == 'POST':
-            
+            item = get_object_or_404(Products, id=pk)
+
             request_getdata = request.POST.get('size', None)
             
-            item = get_object_or_404(Products, id=pk)
             for i in request_getdata:
                 try:
                     size_id = int(i)
                 except:
                     pass
-            size = Size.objects.filter(id=size_id).first()
-            print("took size")
 
-            order_item, created = OrderItem.objects.get_or_create(
-                product = item,
-                size = size,
-                is_ordered = False,
-            )
+            add_to_cart(request, size_id, pk)
+        return redirect("productsContent:certain_product",pk=item.id)
 
-            order_qs = Order.objects.filter(owner = request.user, is_ordered = False)
-            if order_qs.exists():
-                print('in first if')
-                order = order_qs[0]
-                    # check if the order item is in the order
-                if order.items.filter(product=item, size = size).exists():
-                    print('order exist')
-                    order_item.quantity = order_item.quantity + 1
-                    order_item.save()
-                    print('order saved')
-                    messages.info(request, "This item quantity was updated.")
-                    print('message send')
-                    ProductSize.objects.filter( product = item ).update(count=F('count')-1)
-
-                    return redirect("cart:checkout")
-                else:
-                    print('order doest exist')
-                    order.items.add(order_item)
-                    messages.info(request, "This item was added to your cart.")
-                    print('message send')
-                    ProductSize.objects.filter( product = item ).update(count=F('count')-1)
-
-                    return redirect("cart:checkout")
-            else:
-                print('creating order')
-                ordered_date = timezone.now()
-                order = Order.objects.create(
-                    owner=request.user, date_ordered=ordered_date)
-                order.items.add(order_item)
-                print('before message')
-                messages.info(request, "This item was added to your cart.")
-                print('message send')
-                ProductSize.objects.filter( product = item ).update(count=F('count')-1)
-
-                return redirect("productsContent:certain_product",pk=item.id)
-
-            
-    
-
-
-    # @login_required
-    # def add_to_cart(self, request, pk):
-        
-    #     ii = post(self, request, pk)
-    #     item = get_object_or_404(Products, id=pk)
-    #     size_ = Size.objects.filter(id = ii).first()
-    #     i = ProductSize.objects.filter( product = item ).update(count=F('count')-1)
-        
-        
-    #     order_item, created = OrderItem.objects.get_or_create(
-    #         product=item,
-    #         size = size_,
-    #         is_ordered=False
-    #         )
-        
-    #     order_qs = Order.objects.filter(owner=request.user, is_ordered=False)
-    #     if order_qs.exists():
-                
-    #         order = order_qs[0]
-    #             # check if the order item is in the order
-    #         if order.items.filter(product__id=item.id).exists():
-    #             order_item.quantity = order_item.quantity + 1
-    #             order_item.save()
-    #             messages.info(request, "This item quantity was updated.")
-    #             return redirect("productsContent:certain_product",pk=item.id)
-    #         else:
-    #             order.items.add(order_item)
-    #             messages.info(request, "This item was added to your cart.")
-    #             return redirect("productsContent:certain_product",pk=item.id)
-    #     else:
-    #         ordered_date = timezone.now()
-    #         order = Order.objects.create(
-    #             owner=request.user, date_ordered=ordered_date)
-    #         order.items.add(order_item)
-    #         messages.info(request, "This item was added to your cart.")
-    #         return redirect("productsContent:certain_product",pk=item.id)
-        
-    
-        
-
-
-
-
-@login_required
-def order_details(request, **kwargs):
-
-    existing_order = get_user_pending_order(request)
-
-    return render(request, 'cart.html',{'existing_order':existing_order})
-
-
-
-
-
+                 
 @login_required
 def updete_transaction_records(request,order_id):
 
@@ -192,26 +81,6 @@ def updete_transaction_records(request,order_id):
 
 @login_required
 def remove_from_cart(request, pk):
-    item = get_object_or_404(Products, id=pk)
-    order_qs = Order.objects.filter(
-        owner=request.user,
-        is_ordered=False
-    )
-    if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(product__id=item.id).exists():
-            order_item = OrderItem.objects.filter(
-                product=item,
-                is_ordered=False
-            )[0]
-            order.items.remove(order_item)
-            order_item.delete()
-            messages.info(request, "This item was removed from your cart.")
-            return redirect("cart:checkout")
-        else:
-            messages.info(request, "This item was not in your cart")
-            return redirect("cart:checkout")
-    else:
-        messages.info(request, "You do not have an active order")
-        return redirect("cart:checkout")
+
+    remove_item(request,pk)
+    return redirect("cart:checkout")
