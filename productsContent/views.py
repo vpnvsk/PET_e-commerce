@@ -60,14 +60,7 @@ class CertainProductView(View):
                 'product_size': product_size_qs,
                 'form':form            
                 })
-    def post(self, request, pk):
-        
-        if request.method == 'POST':
-        # no need to do this
-        # request_csrf_token = request.POST.get('csrfmiddlewaretoken', '')
-            request_getdata = request.POST.get('size', None) 
-            # make sure that you serialise "request_getdata" 
-            return JsonResponse(request_getdata,safe = False) 
+
     
     
 

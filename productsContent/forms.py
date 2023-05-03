@@ -6,10 +6,6 @@ from .models import Products, ProductSize
 
 
 class SizeForm(forms.Form):
-    # class Meta:
-    #     model = OrderItem 
-#     fields = ('sssize')
-    
 
 
     size_field = forms.ModelChoiceField(
