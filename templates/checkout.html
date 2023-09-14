@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+
+{%block header%}
+            
+    
+{%endblock%}
+
+{% block content %}
+
+{% for order in orders %}
+<div class="p-6 bg-white rounded-b-xl"></div>
+    {% for item in order.items.all %}
+        <img src="{{item.product.images.img1.url}}"  style="width:50%;">
+        <h2 class="text-2xl">{{item.product.brand}} {{item.product.model_name}}</h2>
+        <p class="text-gray-500">{{item.product.price}}</p>
+        <p class="text-gray-500"> Quantity: {{item.quantity}} </p>
+        <p class="text-gray-500"> Size: {{item.size}}</p>
+        <a href="{{item.product.get_delete_from_cart_url}}"><button>Delete from cart</button></a>
+    
+        
+    {% endfor %}
+    <h2 class="text-2xl">Total: {{order.get_cart_total}} </p>
+</div>
+{% endfor %}
+
+{%endblock%}

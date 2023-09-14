@@ -27,8 +27,9 @@ SECRET_KEY = 'django-insecure-e&^lj^g7ozdn9qwe_l*ps@ovp7w4afeh39jr1ao9#9olqx0r2s
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
+LOGIN_URL = '/login.html/'
+LOGIN_REDIRECT_URL ='/'
+LOGOUT_REDIRECT_URL = '/'
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'myapp1',
+    'productsContent',
+    'userAuthentication',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -76,9 +79,13 @@ WSGI_APPLICATION = 'firstproject.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'PET_1',
+        'USER': 'postgres',
+        'PASSWORD': '4566',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -129,3 +136,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
